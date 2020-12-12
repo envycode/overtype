@@ -14,12 +14,21 @@ func SetupRoute(appCtx *appcontext.Application) *mux.Router {
 		Db: appCtx.Db,
 	}
 
+	roomRepository := repository.RoomRepositoryImpl{
+		Redis:             appCtx.Redis,
+		ContentRepository: contentTranslationRepo,
+	}
+
 	addContentTranslationSvc := service.AddContentServiceImpl{
 		Repo: contentTranslationRepo,
 	}
 
 	getContentTranslationSvc := service.GetContentServiceImpl{
 		Repo: contentTranslationRepo,
+	}
+
+	createRoomSvc := service.CreateRoomServiceImpl{
+		Repo: roomRepository,
 	}
 
 	contentTranslationHandler := handler.ContentTranslationHandler{
@@ -30,6 +39,7 @@ func SetupRoute(appCtx *appcontext.Application) *mux.Router {
 	publicHandler := handler.PublicHandler{
 		AppCtx:                   appCtx,
 		GetTranslationContentSvc: getContentTranslationSvc,
+		CreateRoomSvc:            createRoomSvc,
 	}
 
 	r := mux.NewRouter()
@@ -46,6 +56,10 @@ func SetupRoute(appCtx *appcontext.Application) *mux.Router {
 	apiRoute.
 		HandleFunc("/content-translations", publicHandler.Get).
 		Methods(http.MethodGet)
+
+	apiRoute.
+		HandleFunc("/create-room", publicHandler.CreateRoom).
+		Methods(http.MethodPost)
 
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./web_build")))
 	return r

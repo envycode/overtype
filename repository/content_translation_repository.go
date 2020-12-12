@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"github.com/gofrs/uuid"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"net/http"
@@ -14,10 +15,30 @@ import (
 type ContentTranslationRepository interface {
 	Create(ctx context.Context, contract contract.RequestCreateContentContract) (schema.ContentTranslations, error)
 	GetRandom(ctx context.Context, contract contract.RequestGetContentContract) (schema.ContentTranslations, error)
+	GetById(ctx context.Context, id uuid.UUID) (schema.ContentTranslations, error)
 }
 
 type ContentTranslationRepositoryImpl struct {
 	Db *gorm.DB
+}
+
+func (c ContentTranslationRepositoryImpl) GetById(ctx context.Context, id uuid.UUID) (schema.ContentTranslations, error) {
+	var contentTranslation schema.ContentTranslations
+	res := c.Db.
+		Model(&schema.ContentTranslations{}).
+		Select("*").
+		Where("content_translations.content_id = ?", id).
+		First(&contentTranslation)
+
+	if res.Error != nil {
+		log.Errorln(res.Error)
+		return schema.ContentTranslations{}, render.StatusError{
+			HttpCode: http.StatusNotFound,
+			Err:      res.Error,
+		}
+	}
+
+	return contentTranslation, nil
 }
 
 func (c ContentTranslationRepositoryImpl) GetRandom(ctx context.Context, contract contract.RequestGetContentContract) (schema.ContentTranslations, error) {
