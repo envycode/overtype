@@ -43,12 +43,16 @@ func (c ContentTranslationRepositoryImpl) GetById(ctx context.Context, id uuid.U
 
 func (c ContentTranslationRepositoryImpl) GetRandom(ctx context.Context, contract contract.RequestGetContentContract) (schema.ContentTranslations, error) {
 	var contentTranslation schema.ContentTranslations
+	if contract.ContentDifficulty == "" {
+		contract.ContentDifficulty = string(schema.DifficultyMedium)
+	}
 	res := c.Db.
 		Model(&schema.ContentTranslations{}).
 		Select("*").
-		Where("content_translations.source_lang = ? AND content_translations.destined_lang = ?",
+		Where("content_translations.source_lang = ? AND content_translations.destined_lang = ? AND content_translations.content_difficulty = ?",
 			contract.SourceLang,
-			contract.DestinedLang).
+			contract.DestinedLang,
+			contract.ContentDifficulty).
 		Order("RANDOM()").
 		First(&contentTranslation)
 
@@ -64,6 +68,14 @@ func (c ContentTranslationRepositoryImpl) GetRandom(ctx context.Context, contrac
 }
 
 func (c ContentTranslationRepositoryImpl) Create(ctx context.Context, contract contract.RequestCreateContentContract) (schema.ContentTranslations, error) {
+	contentDifficulty, err := schema.StrToDifficulty(contract.ContentDifficulty)
+	if err != nil {
+		log.Warningln(err)
+		return schema.ContentTranslations{}, render.StatusError{
+			HttpCode: http.StatusBadRequest,
+			Err:      err,
+		}
+	}
 	sourceLang, err := schema.StrToLang(contract.SourceLang)
 	if err != nil {
 		log.Warningln(err)
@@ -81,12 +93,13 @@ func (c ContentTranslationRepositoryImpl) Create(ctx context.Context, contract c
 		}
 	}
 	contentTranslation := schema.ContentTranslations{
-		SourceLang:   sourceLang,
-		DestinedLang: destinedLang,
-		SourceText:   contract.SourceText,
-		DestinedText: contract.DestinedText,
-		CreatedAt:    time.Time{},
-		UpdatedAt:    time.Time{},
+		ContentDifficulty: contentDifficulty,
+		SourceLang:        destinedLang,
+		DestinedLang:      sourceLang,
+		SourceText:        contract.SourceText,
+		DestinedText:      contract.DestinedText,
+		CreatedAt:         time.Time{},
+		UpdatedAt:         time.Time{},
 	}
 
 	res := c.Db.Create(&contentTranslation)
