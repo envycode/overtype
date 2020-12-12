@@ -43,12 +43,16 @@ func (c ContentTranslationRepositoryImpl) GetById(ctx context.Context, id uuid.U
 
 func (c ContentTranslationRepositoryImpl) GetRandom(ctx context.Context, contract contract.RequestGetContentContract) (schema.ContentTranslations, error) {
 	var contentTranslation schema.ContentTranslations
+	if contract.ContentDifficulty == "" {
+        contract.ContentDifficulty = string(schema.DifficultyMedium)
+    }
 	res := c.Db.
 		Model(&schema.ContentTranslations{}).
 		Select("*").
-		Where("content_translations.source_lang = ? AND content_translations.destined_lang = ?",
+		Where("content_translations.source_lang = ? AND content_translations.destined_lang = ? AND content_translations.content_difficulty = ?",
 			contract.SourceLang,
-			contract.DestinedLang).
+			contract.DestinedLang,
+			contract.ContentDifficulty).
 		Order("RANDOM()").
 		First(&contentTranslation)
 

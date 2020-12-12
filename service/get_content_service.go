@@ -22,6 +22,7 @@ func (a GetContentServiceImpl) Exec(ctx context.Context, data contract.RequestGe
 		return contract.ResponseGetContentContract{}, err
 	}
 	return contract.ResponseGetContentContract{
+		ContentDifficulty:   res.ContentDifficulty,
 		SourceLang:   res.SourceLang,
 		DestinedLang: res.DestinedLang,
 		SourceText:   res.SourceText,
