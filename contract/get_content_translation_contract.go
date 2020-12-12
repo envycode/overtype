@@ -1,8 +1,8 @@
 package contract
 
 import (
-    "net/http"
-    "overtype/schema"
+	"net/http"
+	"overtype/schema"
 )
 
 type RequestGetContentContract struct {
@@ -17,7 +17,7 @@ func NewRequestGetContentContract(r *http.Request) RequestGetContentContract {
 	sourceLang := ""
 	destinedLang := ""
 	if len(params["content_difficulty"]) > 0 {
-        contentDifficulty = params["content_difficulty"][0]
+		contentDifficulty = params["content_difficulty"][0]
 	}
 	if len(params["source_lang"]) > 0 {
 		sourceLang = params["source_lang"][0]
