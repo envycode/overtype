@@ -64,6 +64,14 @@ func (c ContentTranslationRepositoryImpl) GetRandom(ctx context.Context, contrac
 }
 
 func (c ContentTranslationRepositoryImpl) Create(ctx context.Context, contract contract.RequestCreateContentContract) (schema.ContentTranslations, error) {
+	contentDifficulty, err := schema.StrToDifficulty(contract.ContentDifficulty)
+	if err != nil {
+		log.Warningln(err)
+		return schema.ContentTranslations{}, render.StatusError{
+			HttpCode: http.StatusBadRequest,
+			Err:      err,
+		}
+	}
 	sourceLang, err := schema.StrToLang(contract.SourceLang)
 	if err != nil {
 		log.Warningln(err)
@@ -81,12 +89,13 @@ func (c ContentTranslationRepositoryImpl) Create(ctx context.Context, contract c
 		}
 	}
 	contentTranslation := schema.ContentTranslations{
-		SourceLang:   sourceLang,
-		DestinedLang: destinedLang,
-		SourceText:   contract.SourceText,
-		DestinedText: contract.DestinedText,
-		CreatedAt:    time.Time{},
-		UpdatedAt:    time.Time{},
+		ContentDifficulty: contentDifficulty,
+		SourceLang:        destinedLang,
+		DestinedLang:      sourceLang,
+		SourceText:        contract.SourceText,
+		DestinedText:      contract.DestinedText,
+		CreatedAt:         time.Time{},
+		UpdatedAt:         time.Time{},
 	}
 
 	res := c.Db.Create(&contentTranslation)

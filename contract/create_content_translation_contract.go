@@ -7,10 +7,11 @@ import (
 )
 
 type RequestCreateContentContract struct {
-	SourceLang   string `json:"source_lang" validate:"required"`
-	DestinedLang string `json:"destined_lang" validate:"required"`
-	SourceText   string `json:"source_text" validate:"required"`
-	DestinedText string `json:"destined_text" validate:"required"`
+	ContentDifficulty string `json:"content_difficulty" validate:"required"`
+	SourceLang        string `json:"source_lang" validate:"required"`
+	DestinedLang      string `json:"destined_lang" validate:"required"`
+	SourceText        string `json:"source_text" validate:"required"`
+	DestinedText      string `json:"destined_text" validate:"required"`
 }
 
 func NewRequestCreateContentContract(r *http.Request) (RequestCreateContentContract, error) {

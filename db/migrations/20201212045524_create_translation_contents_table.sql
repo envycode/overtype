@@ -1,9 +1,11 @@
 -- migrate:up
 
 CREATE TYPE lang AS ENUM ('en', 'jp', 'jp-hiragana', 'jp-katakana');
+CREATE TYPE difficulty AS ENUM ('easy', 'medium', 'hard');
 
 CREATE TABLE IF NOT EXISTS content_translations (
     content_id uuid PRIMARY KEY NOT NULL,
+    content_difficulty difficulty NOT NULL,
     source_lang lang NOT NULL,
     destined_lang lang NOT NULL,
     source_text text NOT NULL,
@@ -16,4 +18,5 @@ CREATE TABLE IF NOT EXISTS content_translations (
 
 DROP TABLE IF EXISTS content_translations;
 DROP TYPE IF EXISTS lang;
+DROP TYPE IF EXISTS difficulty;
 
