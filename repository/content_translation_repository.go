@@ -44,8 +44,8 @@ func (c ContentTranslationRepositoryImpl) GetById(ctx context.Context, id uuid.U
 func (c ContentTranslationRepositoryImpl) GetRandom(ctx context.Context, contract contract.RequestGetContentContract) (schema.ContentTranslations, error) {
 	var contentTranslation schema.ContentTranslations
 	if contract.ContentDifficulty == "" {
-        contract.ContentDifficulty = string(schema.DifficultyMedium)
-    }
+		contract.ContentDifficulty = string(schema.DifficultyMedium)
+	}
 	res := c.Db.
 		Model(&schema.ContentTranslations{}).
 		Select("*").

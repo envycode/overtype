@@ -6,9 +6,9 @@ import (
 )
 
 type RequestGetContentContract struct {
-    ContentDifficulty string `json:"content_difficulty" validate:"required"`
-    SourceLang   string `json:"source_lang" validate:"required"`
-	DestinedLang string `json:"destined_lang" validate:"required"`
+	ContentDifficulty string `json:"content_difficulty" validate:"required"`
+	SourceLang        string `json:"source_lang" validate:"required"`
+	DestinedLang      string `json:"destined_lang" validate:"required"`
 }
 
 func NewRequestGetContentContract(r *http.Request) RequestGetContentContract {
@@ -33,9 +33,9 @@ func NewRequestGetContentContract(r *http.Request) RequestGetContentContract {
 }
 
 type ResponseGetContentContract struct {
-	ContentDifficulty   schema.ContentDifficulty `json:"content_difficulty" validate:"required"`
-	SourceLang   schema.ContentLang `json:"source_lang" validate:"required"`
-	DestinedLang schema.ContentLang `json:"destined_lang" validate:"required"`
-	SourceText   string             `json:"source_text" validate:"required"`
-	DestinedText string             `json:"destined_text" validate:"required"`
+	ContentDifficulty schema.ContentDifficulty `json:"content_difficulty" validate:"required"`
+	SourceLang        schema.ContentLang       `json:"source_lang" validate:"required"`
+	DestinedLang      schema.ContentLang       `json:"destined_lang" validate:"required"`
+	SourceText        string                   `json:"source_text" validate:"required"`
+	DestinedText      string                   `json:"destined_text" validate:"required"`
 }
