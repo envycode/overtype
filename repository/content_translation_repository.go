@@ -13,10 +13,33 @@ import (
 
 type ContentTranslationRepository interface {
 	Create(ctx context.Context, contract contract.RequestCreateContentContract) (schema.ContentTranslations, error)
+	GetRandom(ctx context.Context, contract contract.RequestGetContentContract) (schema.ContentTranslations, error)
 }
 
 type ContentTranslationRepositoryImpl struct {
 	Db *gorm.DB
+}
+
+func (c ContentTranslationRepositoryImpl) GetRandom(ctx context.Context, contract contract.RequestGetContentContract) (schema.ContentTranslations, error) {
+	var contentTranslation schema.ContentTranslations
+	res := c.Db.
+		Model(&schema.ContentTranslations{}).
+		Select("*").
+		Where("content_translations.source_lang = ? AND content_translations.destined_lang = ?",
+			contract.SourceLang,
+			contract.DestinedLang).
+		Order("RANDOM()").
+		First(&contentTranslation)
+
+	if res.Error != nil {
+		log.Errorln(res.Error)
+		return schema.ContentTranslations{}, render.StatusError{
+			HttpCode: http.StatusNotFound,
+			Err:      res.Error,
+		}
+	}
+
+	return contentTranslation, nil
 }
 
 func (c ContentTranslationRepositoryImpl) Create(ctx context.Context, contract contract.RequestCreateContentContract) (schema.ContentTranslations, error) {
@@ -37,8 +60,8 @@ func (c ContentTranslationRepositoryImpl) Create(ctx context.Context, contract c
 		}
 	}
 	contentTranslation := schema.ContentTranslations{
-		SourceLang:   destinedLang,
-		DestinedLang: sourceLang,
+		SourceLang:   sourceLang,
+		DestinedLang: destinedLang,
 		SourceText:   contract.SourceText,
 		DestinedText: contract.DestinedText,
 		CreatedAt:    time.Time{},

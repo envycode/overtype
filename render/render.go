@@ -20,14 +20,14 @@ func (se StatusError) Error() string {
 }
 
 func RenderOk(w http.ResponseWriter, data interface{}) {
+	w.Header().Set("Content-Type", "application/json")
 	jsondata, err := json.Marshal(data)
 	if err != nil {
 		RenderErr(w, err)
 		return
 	}
-	_, _ = w.Write(jsondata)
-	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write(jsondata)
 }
 
 func RenderErr(w http.ResponseWriter, err error) {

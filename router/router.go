@@ -18,9 +18,18 @@ func SetupRoute(appCtx *appcontext.Application) *mux.Router {
 		Repo: contentTranslationRepo,
 	}
 
+	getContentTranslationSvc := service.GetContentServiceImpl{
+		Repo: contentTranslationRepo,
+	}
+
 	contentTranslationHandler := handler.ContentTranslationHandler{
 		AppCtx:    appCtx,
 		CreateSvc: addContentTranslationSvc,
+	}
+
+	publicHandler := handler.PublicHandler{
+		AppCtx:                   appCtx,
+		GetTranslationContentSvc: getContentTranslationSvc,
 	}
 
 	r := mux.NewRouter()
@@ -32,6 +41,11 @@ func SetupRoute(appCtx *appcontext.Application) *mux.Router {
 	privateRoute.
 		HandleFunc("/content-translations", contentTranslationHandler.Create).
 		Methods(http.MethodPost)
+
+	apiRoute := r.PathPrefix("/api").Subrouter()
+	apiRoute.
+		HandleFunc("/content-translations", publicHandler.Get).
+		Methods(http.MethodGet)
 
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./web_build")))
 	return r
