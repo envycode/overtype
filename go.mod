@@ -8,6 +8,7 @@ require (
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/gorilla/mux v1.8.0
+	github.com/gorilla/websocket v1.4.2
 	github.com/jackc/pgx/v4 v4.10.0 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/satori/go.uuid v1.2.0

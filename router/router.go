@@ -31,6 +31,11 @@ func SetupRoute(appCtx *appcontext.Application) *mux.Router {
 		Repo: roomRepository,
 	}
 
+	roomSocketSvc := service.RoomSocketServiceImpl{
+		Redis: appCtx.Redis,
+		Repo:  roomRepository,
+	}
+
 	contentTranslationHandler := handler.ContentTranslationHandler{
 		AppCtx:    appCtx,
 		CreateSvc: addContentTranslationSvc,
@@ -40,6 +45,7 @@ func SetupRoute(appCtx *appcontext.Application) *mux.Router {
 		AppCtx:                   appCtx,
 		GetTranslationContentSvc: getContentTranslationSvc,
 		CreateRoomSvc:            createRoomSvc,
+		RoomSocketSvc:            roomSocketSvc,
 	}
 
 	r := mux.NewRouter()
@@ -60,6 +66,10 @@ func SetupRoute(appCtx *appcontext.Application) *mux.Router {
 	apiRoute.
 		HandleFunc("/create-room", publicHandler.CreateRoom).
 		Methods(http.MethodPost)
+
+	apiRoute.
+		HandleFunc("/join-room", publicHandler.JoinRoom).
+		Methods(http.MethodGet)
 
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./web_build")))
 	return r

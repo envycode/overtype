@@ -1,5 +1,9 @@
 package schema
 
+const ActionJoin = "join"
+const ActionReady = "ready"
+const ActionSync = "sync"
+
 type RoomState int
 
 const RoomStatePending RoomState = 0
@@ -10,12 +14,12 @@ const RoomStateEnded RoomState = 3
 type ParticipantState int
 
 const ParticipantStatePending ParticipantState = 0
-const ParticipantStateGoing ParticipantState = 1
+const ParticipantStateReady ParticipantState = 1
 const ParticipantStateFinish ParticipantState = 2
 
 type RoomParticipant struct {
-	State    ParticipantState `json:"state"`
-	WordType int              `json:"word_type"`
+	State            ParticipantState `json:"state"`
+	CurrentWordCount int              `json:"word_type"`
 }
 
 type Room struct {
