@@ -32,5 +32,7 @@ func SetupRoute(appCtx *appcontext.Application) *mux.Router {
 	privateRoute.
 		HandleFunc("/content-translations", contentTranslationHandler.Create).
 		Methods(http.MethodPost)
+
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./web_build")))
 	return r
 }
