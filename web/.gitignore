@@ -3,3 +3,6 @@
 /src/node_modules/@sapper/
 yarn-error.log
 /__sapper__/
+
+# tailwind build output
+static/main.css
