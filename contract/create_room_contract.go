@@ -9,9 +9,17 @@ type RequestCreateRoomContract struct {
 
 func NewRequestCreateRoomContract(r *http.Request) RequestCreateRoomContract {
 	params := r.URL.Query()
+	sourceLang := ""
+	destinedLang := ""
+	if len(params["source_lang"]) > 0 {
+		sourceLang = params["source_lang"][0]
+	}
+	if len(params["destined_lang"]) > 0 {
+		destinedLang = params["destined_lang"][0]
+	}
 	return RequestCreateRoomContract{
-		SourceLang:   params["source_lang"][0],
-		DestinedLang: params["destined_lang"][0],
+		SourceLang:   sourceLang,
+		DestinedLang: destinedLang,
 	}
 }
 

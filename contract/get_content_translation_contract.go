@@ -12,9 +12,17 @@ type RequestGetContentContract struct {
 
 func NewRequestGetContentContract(r *http.Request) RequestGetContentContract {
 	params := r.URL.Query()
+	sourceLang := ""
+	destinedLang := ""
+	if len(params["source_lang"]) > 0 {
+		sourceLang = params["source_lang"][0]
+	}
+	if len(params["destined_lang"]) > 0 {
+		destinedLang = params["destined_lang"][0]
+	}
 	return RequestGetContentContract{
-		SourceLang:   params["source_lang"][0],
-		DestinedLang: params["destined_lang"][0],
+		SourceLang:   sourceLang,
+		DestinedLang: destinedLang,
 	}
 }
 
