@@ -26,6 +26,7 @@ func RenderOk(w http.ResponseWriter, data interface{}) {
 		return
 	}
 	_, _ = w.Write(jsondata)
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -36,5 +37,6 @@ func RenderErr(w http.ResponseWriter, err error) {
 	default:
 		w.WriteHeader(http.StatusInternalServerError)
 	}
+	w.Header().Set("Content-Type", "application/json")
 	_, _ = w.Write([]byte(err.Error()))
 }
