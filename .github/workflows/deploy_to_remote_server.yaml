@@ -1,0 +1,32 @@
+name: deploy_to_remove_server
+
+on:
+  workflow_dispatch:
+    inputs:
+      checkout:
+        description: "Branch or Commit ID to build"
+        default: "master"
+        required: true
+
+jobs:
+  build-and-push-registry:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - run: git checkout ${{ github.event.inputs.checkout }}
+      - run: sed -i "s/<CHECKOUT>/${{ github.event.inputs.checkout }}/g" .manifest/deployment.yaml
+      - name: Deploy changes
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+          KUBE_CONTEXT: ${{ secrets.KUBE_CONTEXT }}
+        with:
+          args: apply -f .manifest/deployment.yaml -n personal
+      - name: Check changes
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+          KUBE_CONTEXT: ${{ secrets.KUBE_CONTEXT }}
+        with:
+          args: get deployment -n personal
