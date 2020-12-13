@@ -34,6 +34,7 @@ spec:
         - name: github-container-registry
       containers:
         - name: overtype
+          imagePullPolicy: Always
           image: ghcr.io/envycode/overtype:${{CHECKOUT}}
           ports:
             - containerPort: 8080
