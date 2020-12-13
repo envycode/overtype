@@ -5,4 +5,4 @@ yarn-error.log
 /__sapper__/
 
 # tailwind build output
-static/main.css
+static/global.css

@@ -4,7 +4,9 @@ import replace from '@rollup/plugin-replace';
 import commonjs from '@rollup/plugin-commonjs';
 import url from '@rollup/plugin-url';
 import alias from '@rollup/plugin-alias';
+import yaml from '@rollup/plugin-yaml';
 import svelte from 'rollup-plugin-svelte';
+import svelteSVG from 'rollup-plugin-svelte-svg';
 import sveltePreprocess from 'svelte-preprocess';
 import image from 'svelte-image';
 import babel from '@rollup/plugin-babel';
@@ -22,7 +24,7 @@ const extensions = ['.svelte', '.svx'];
 const svelteImageOptions = {
   placeholder: 'trace',
   trace: {
-    threshold: 120,
+    threshold: 100,
     color: '#ff3c00',
     background: '#fff'
   }
@@ -76,6 +78,8 @@ export default {
       }),
       commonjs(),
       alias(aliasPath),
+      yaml(),
+      svelteSVG({ dev }),
 
       legacy &&
         babel({
@@ -133,7 +137,9 @@ export default {
         dedupe: ['svelte']
       }),
       commonjs(),
-      alias(aliasPath)
+      alias(aliasPath),
+      yaml(),
+      svelteSVG({ generate: 'ssr', dev })
     ],
     external: Object.keys(pkg.dependencies).concat(require('module').builtinModules),
 

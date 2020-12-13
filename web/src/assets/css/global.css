@@ -1,0 +1,20 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+.button-primary {
+  @apply bg-yellow-500;
+  @apply text-white;
+  @apply font-bold;
+  @apply py-2;
+  @apply px-4;
+  @apply border-b-4;
+  @apply border-yellow-700;
+  @apply rounded-full;
+}
+
+.button-primary:hover {
+  @apply border-b-2;
+  @apply border-t-2;
+  @apply border-yellow-500;
+}

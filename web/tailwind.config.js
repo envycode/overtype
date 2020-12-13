@@ -42,6 +42,7 @@ module.exports = {
         body:
           'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif'
       },
+
       colors: {
         primary: '#ff3c00',
         secondary: '#676778'

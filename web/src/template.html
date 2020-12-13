@@ -14,7 +14,9 @@
 	<!-- Sapper creates a <script> tag containing `src/client.js`
 	     and anything else it needs to hydrate the app and
 	     initialise the router -->
-	%sapper.scripts%
+  %sapper.scripts%
+
+  <link rel="preload" href="/global.css" as="style" onload='this.onload=null;this.rel="stylesheet"' />
 
 	<!-- Sapper generates a <style> tag containing critical CSS
 	     for the current page. CSS for the rest of the app is
@@ -25,7 +27,7 @@
 	     the current page has one -->
 	%sapper.head%
 </head>
-<body>
+<body class="font-body">
 	<!-- The application will be rendered inside this element,
 	     because `src/client.js` references it -->
 	<div id="sapper">%sapper.html%</div>
