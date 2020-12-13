@@ -14,6 +14,7 @@
       },
       data,
       createRoomFail()
+    );
   }
 </script>
 
