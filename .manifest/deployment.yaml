@@ -22,7 +22,7 @@ spec:
       containers:
         - name: overtype
           imagePullPolicy: Always
-          image: ghcr.io/envycode/overtype:${{CHECKOUT}}
+          image: ghcr.io/envycode/overtype:#{CHECKOUT}
           ports:
             - containerPort: 8080
           env:

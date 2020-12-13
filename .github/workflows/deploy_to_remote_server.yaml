@@ -15,7 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - run: git checkout ${{ github.event.inputs.checkout }}
-      - run: sed -i "s/<CHECKOUT>/${{ github.event.inputs.checkout }}/g" .manifest/deployment.yaml
+      - run: sed -i "s/#{CHECKOUT}/${{ github.event.inputs.checkout }}/g" .manifest/deployment.yaml
       - name: Pre check changes
         uses: actions-hub/kubectl@master
         env:
