@@ -27,6 +27,10 @@ func SetupRoute(appCtx *appcontext.Application) *mux.Router {
 		Repo: contentTranslationRepo,
 	}
 
+	getContentByRoomCode := service.GetContentByRoomServiceImpl{
+		Repo: roomRepository,
+	}
+
 	createRoomSvc := service.CreateRoomServiceImpl{
 		Repo: roomRepository,
 	}
@@ -46,6 +50,7 @@ func SetupRoute(appCtx *appcontext.Application) *mux.Router {
 		GetTranslationContentSvc: getContentTranslationSvc,
 		CreateRoomSvc:            createRoomSvc,
 		RoomSocketSvc:            roomSocketSvc,
+		GetContentByRoomSvc:      getContentByRoomCode,
 	}
 
 	r := mux.NewRouter()
@@ -61,6 +66,10 @@ func SetupRoute(appCtx *appcontext.Application) *mux.Router {
 	apiRoute := r.PathPrefix("/api").Subrouter()
 	apiRoute.
 		HandleFunc("/content-translations", publicHandler.Get).
+		Methods(http.MethodGet)
+
+	apiRoute.
+		HandleFunc("/content-by-room-code", publicHandler.GetByRoomCode).
 		Methods(http.MethodGet)
 
 	apiRoute.

@@ -15,6 +15,7 @@ type PublicHandler struct {
 	GetTranslationContentSvc service.GetContentService
 	CreateRoomSvc            service.CreateRoomService
 	RoomSocketSvc            service.RoomSocketService
+	GetContentByRoomSvc      service.GetContentByRoomService
 }
 
 func (p PublicHandler) Get(w http.ResponseWriter, r *http.Request) {
@@ -28,6 +29,25 @@ func (p PublicHandler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	result, err := p.GetTranslationContentSvc.Exec(r.Context(), getContentTranslationContract)
+	if err != nil {
+		log.Infoln(err)
+		render.RenderErr(w, err)
+		return
+	}
+	render.RenderOk(w, result)
+}
+
+func (p PublicHandler) GetByRoomCode(w http.ResponseWriter, r *http.Request) {
+	getContentTranslationContract := contract.NewRequestGetContentByRoomCodeContract(r)
+	if err := p.AppCtx.Validate.Struct(getContentTranslationContract); err != nil {
+		log.Infoln(err)
+		render.RenderErr(w, render.StatusError{
+			HttpCode: http.StatusBadRequest,
+			Err:      err,
+		})
+		return
+	}
+	result, err := p.GetContentByRoomSvc.Exec(r.Context(), getContentTranslationContract)
 	if err != nil {
 		log.Infoln(err)
 		render.RenderErr(w, err)

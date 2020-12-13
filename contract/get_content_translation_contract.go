@@ -32,6 +32,21 @@ func NewRequestGetContentContract(r *http.Request) RequestGetContentContract {
 	}
 }
 
+type RequestGetContentByRoomCodeContract struct {
+	Code string `json:"code" validate:"required"`
+}
+
+func NewRequestGetContentByRoomCodeContract(r *http.Request) RequestGetContentByRoomCodeContract {
+	params := r.URL.Query()
+	code := ""
+	if len(params["code"]) > 0 {
+		code = params["code"][0]
+	}
+	return RequestGetContentByRoomCodeContract{
+		Code: code,
+	}
+}
+
 type ResponseGetContentContract struct {
 	ContentDifficulty schema.ContentDifficulty `json:"content_difficulty" validate:"required"`
 	SourceLang        schema.ContentLang       `json:"source_lang" validate:"required"`
