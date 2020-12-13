@@ -8,6 +8,9 @@ const api = {
   createRoom: (cb, params, errHandler) => {
     httpApi.postDataViaApi(`/api/create-room${querySerializer(params)}`, cb, errHandler);
   },
+  getRoomByCode: (cb, params, errHandler) => {
+    httpApi.getDataViaApi(`/api/content-by-room-code${querySerializer(params)}`, cb, errHandler);
+  }
 };
 
 export default api;

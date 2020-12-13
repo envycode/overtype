@@ -1,19 +1,16 @@
 <script>
   import { fade } from 'svelte/transition';
+  import { goto } from '@sapper/app';
+  import { username } from '@/store/index.js';
   import api from '@/api/index.js';
   import Metadata from '@/components/Metadata.svelte';
   import Play from '@/assets/img/play.svg';
 
   let code = '';
-  let username = 'Username';
   let visibleInput = false;
 
   function toggleInput() {
     visibleInput = !visibleInput;
-  }
-
-  function createRoomFail() {
-    console.log('create room failed');
   }
 
   function createRoom() {
@@ -21,15 +18,17 @@
       source_lang: 'jp-hiragana',
       destined_lang: 'en'
     };
-    api.getContent(
-      response => {
-        const { result } = response.body;
-        console.log(result, response);
-        success && success(response);
-      },
-      params,
-      createRoomFail()
-    );
+    api.createRoom(createRoomSuccess, params, createRoomFail);
+  }
+
+  function createRoomSuccess(response) {
+    console.log(response);
+    const { room_id } = response.body;
+    goto(`/room/${room_id}`);
+  }
+
+  function createRoomFail() {
+    console.log('create room failed');
   }
 </script>
 
@@ -40,7 +39,11 @@
     @apply h-screen;
     @apply bg-blue-300;
   }
-
+  .home-wrapper {
+    @apply mx-auto;
+    @apply my-auto;
+    width: 200px;
+  }
   .title {
     @apply text-center;
     text-shadow: -4px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
@@ -49,12 +52,6 @@
   .menu {
     @apply w-48;
     @apply mt-8;
-  }
-
-  .home-wrapper {
-    @apply mx-auto;
-    @apply my-auto;
-    width: 200px;
   }
 </style>
 
@@ -75,7 +72,7 @@
                 class="placeholder-blue w-48 p-2 no-outline text-dusty-blue-darker"
                 name="username"
                 placeholder="Your name"
-                bind:value={username} />
+                bind:value={$username} />
             </div>
           </div>
         </div>

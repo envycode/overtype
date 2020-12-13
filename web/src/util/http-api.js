@@ -28,7 +28,7 @@ function defaultHandlerConnectionError(err) {
 }
 
 export default {
-  getDataViaApi(path, cb, errorHandler, httpStatusHandler) {
+  getDataViaApi(path, cb, errorHandler, httpStatusHandler, baseUrl) {
     const headers = {
       'Cache-Control': 'no-cache',
       // 'User-Agent': navigator.userAgent
@@ -38,7 +38,7 @@ export default {
     }
     axios.get(path, {
       headers,
-      baseURL: ENV.BASE_URL
+      baseURL: baseUrl || ENV.BASE_URL
     })
       .then(dataAdapter(cb))
       .catch((error) => {
@@ -48,7 +48,7 @@ export default {
       });
   },
 
-  postDataViaApi(path, cb, data, errorHandler, httpStatusHandler) {
+  postDataViaApi(path, cb, data, errorHandler, httpStatusHandler, baseUrl) {
     const headers = {
       // 'User-Agent': navigator.userAgent
     };
@@ -57,7 +57,7 @@ export default {
     }
     axios.post(path, data, {
       headers,
-      baseURL: ENV.BASE_URL
+      baseURL: baseUrl || ENV.BASE_URL
     })
       .then(dataAdapter(cb))
       .catch((error) => {
@@ -67,7 +67,7 @@ export default {
       });
   },
 
-  deleteDataViaApi(path, cb, data, errorHandler, httpStatusHandler) {
+  deleteDataViaApi(path, cb, data, errorHandler, httpStatusHandler, baseUrl) {
     const headers = {
       // 'User-Agent': navigator.userAgent
     };
@@ -77,7 +77,7 @@ export default {
     axios.delete(path, {
       headers,
       data,
-      baseURL: ENV.BASE_URL
+      baseURL: baseUrl || ENV.BASE_URL
     })
       .then(dataAdapter(cb))
       .catch((error) => {
@@ -87,7 +87,7 @@ export default {
       });
   },
 
-  patchDataViaApi(path, cb, data, errorHandler, httpStatusHandler) {
+  patchDataViaApi(path, cb, data, errorHandler, httpStatusHandler, baseUrl) {
     const headers = {
       // 'User-Agent': navigator.userAgent
     };
@@ -96,7 +96,7 @@ export default {
     }
     axios.patch(path, data, {
       headers,
-      baseURL: ENV.BASE_URL
+      baseURL: baseUrl || ENV.BASE_URL
     })
       .then(dataAdapter(cb))
       .catch((error) => {
