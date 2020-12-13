@@ -1,4 +1,4 @@
-name: build-and-push-registry
+name: build_and_push_registry
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ on:
         required: true
 
 jobs:
-  build-and-push-registry:
+  build_and_push_registry:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

@@ -1,0 +1,21 @@
+name: check_state
+
+on:
+  workflow_dispatch:
+    inputs:
+      checkout:
+        description: "Branch or Commit ID to build"
+        default: "master"
+        required: true
+
+jobs:
+  check_state:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check current state
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+          KUBE_CONTEXT: ${{ secrets.KUBE_CONTEXT }}
+        with:
+          args: get pods -n personal -l app=overtype
