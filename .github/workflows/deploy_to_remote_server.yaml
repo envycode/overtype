@@ -29,7 +29,7 @@ jobs:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
           KUBE_CONTEXT: ${{ secrets.KUBE_CONTEXT }}
         with:
-          args: set image deployment/overtype-deployment overtype=ghcr.io/envycode/overtype:${{ github.event.inputs.checkout }} -n personal
+          args: apply -f .manifest/deployment.yaml -n personal
       - name: Post check changes
         uses: actions-hub/kubectl@master
         env:
