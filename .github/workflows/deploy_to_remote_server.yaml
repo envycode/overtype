@@ -1,4 +1,4 @@
-name: deploy_to_remove_server
+name: deploy_to_remote_server
 
 on:
   workflow_dispatch:
@@ -9,13 +9,20 @@ on:
         required: true
 
 jobs:
-  build-and-push-registry:
+  deploy_to_remote_server:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - run: git checkout ${{ github.event.inputs.checkout }}
       - run: sed -i "s/<CHECKOUT>/${{ github.event.inputs.checkout }}/g" .manifest/deployment.yaml
+      - name: Pre check changes
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+          KUBE_CONTEXT: ${{ secrets.KUBE_CONTEXT }}
+        with:
+          args: get pods -n personal -l app=overtype
       - name: Deploy changes
         uses: actions-hub/kubectl@master
         env:
@@ -23,10 +30,10 @@ jobs:
           KUBE_CONTEXT: ${{ secrets.KUBE_CONTEXT }}
         with:
           args: set image deployment/overtype-deployment overtype=ghcr.io/envycode/overtype:${{ github.event.inputs.checkout }} -n personal
-      - name: Check changes
+      - name: Post check changes
         uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
           KUBE_CONTEXT: ${{ secrets.KUBE_CONTEXT }}
         with:
-          args: get deployment -n personal
+          args: get pods -n personal -l app=overtype
