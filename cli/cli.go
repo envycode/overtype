@@ -2,6 +2,7 @@ package cli
 
 import (
 	"context"
+	"github.com/rs/cors"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"net/http"
@@ -17,8 +18,12 @@ var rootCmd = &cobra.Command{
 	Use:   "overtype",
 	Short: "Overtype main application",
 	Run: func(cmd *cobra.Command, args []string) {
+		handler := cors.
+			AllowAll().
+			Handler(router.SetupRoute(appCtx))
+
 		srv := &http.Server{
-			Handler:      router.SetupRoute(appCtx),
+			Handler:      handler,
 			Addr:         appCtx.Config.App.AppAddress(),
 			WriteTimeout: 15 * time.Second,
 			ReadTimeout:  15 * time.Second,
