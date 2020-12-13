@@ -18,6 +18,8 @@ const ParticipantStateReady ParticipantState = 1
 const ParticipantStateFinish ParticipantState = 2
 
 type RoomParticipant struct {
+	ParticipantId    string           `json:"participant_id"`
+	ParticipantName  string           `json:"participant_name"`
 	State            ParticipantState `json:"state"`
 	CurrentWordCount int              `json:"word_type"`
 }

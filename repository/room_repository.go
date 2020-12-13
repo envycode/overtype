@@ -89,6 +89,8 @@ func (r RoomRepositoryImpl) Join(ctx context.Context, in contract.RequestJoinRoo
 	room.Result[in.ParticipantId] = schema.RoomParticipant{
 		State:            schema.ParticipantStatePending,
 		CurrentWordCount: 0,
+		ParticipantId:    in.ParticipantId,
+		ParticipantName:  in.ParticipantName,
 	}
 
 	if err := set(r.Redis, room.RoomId, room); err != nil {

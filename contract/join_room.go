@@ -3,8 +3,9 @@ package contract
 import "net/http"
 
 type RequestJoinRoomContract struct {
-	Code          string `json:"code" validate:"required"`
-	ParticipantId string `json:"participant_id" validate:"required"`
+	Code            string `json:"code" validate:"required"`
+	ParticipantId   string `json:"participant_id" validate:"required"`
+	ParticipantName string `json:"participant_name" validate:"required"`
 }
 
 func NewRequestJoinRoom(r *http.Request) RequestJoinRoomContract {
