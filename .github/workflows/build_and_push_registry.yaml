@@ -31,4 +31,5 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64
           push: true
-          tags: [ "ghcr.io/user/app:${{ github.event.inputs.checkout }}" ]
+          tags: |
+            ghcr.io/user/app:${{ github.event.inputs.checkout }}
