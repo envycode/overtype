@@ -39,7 +39,7 @@ func (r RoomSocketServiceImpl) Listener(ctx context.Context, req contract.Reques
 				continue
 			}
 		case broadcast := <-ch:
-			r.sendAndMarshal(broadcast.Payload, writer)
+			writer <- broadcast.Payload
 		}
 
 	}

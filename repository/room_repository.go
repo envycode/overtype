@@ -135,6 +135,11 @@ func (r RoomRepositoryImpl) Ready(ctx context.Context, state contract.RequestWeb
 	}
 
 	if isAllReady {
+	    room.State = schema.RoomStateStarted
+        if err := set(r.Redis, room.RoomId, room); err != nil {
+            log.Errorln(err)
+            return schema.Room{}, err
+        }
 		res, err := json.Marshal(&contract.ResponseWebsocketContract{
 			MyState:     currentState.State,
 			RoomState:   schema.RoomStateStarted,
