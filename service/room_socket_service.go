@@ -107,6 +107,9 @@ func (r RoomSocketServiceImpl) Handle(ctx context.Context, req contract.RequestW
 			}, writer)
 			return
 		}
+		if res.RoomId == "" {
+			return
+		}
 		r.sendAndMarshal(contract.ResponseWebsocketContract{
 			MyState:     res.Result[req.ParticipantId].State,
 			RoomState:   res.State,
@@ -121,6 +124,9 @@ func (r RoomSocketServiceImpl) Handle(ctx context.Context, req contract.RequestW
 				HttpCode: http.StatusBadRequest,
 				Err:      err,
 			}, writer)
+			return
+		}
+		if res.RoomId == "" {
 			return
 		}
 		r.sendAndMarshal(contract.ResponseWebsocketContract{

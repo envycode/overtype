@@ -135,11 +135,11 @@ func (r RoomRepositoryImpl) Ready(ctx context.Context, state contract.RequestWeb
 	}
 
 	if isAllReady {
-	    room.State = schema.RoomStateStarted
-        if err := set(r.Redis, room.RoomId, room); err != nil {
-            log.Errorln(err)
-            return schema.Room{}, err
-        }
+		room.State = schema.RoomStateStarted
+		if err := set(r.Redis, room.RoomId, room); err != nil {
+			log.Errorln(err)
+			return schema.Room{}, err
+		}
 		res, err := json.Marshal(&contract.ResponseWebsocketContract{
 			MyState:     currentState.State,
 			RoomState:   schema.RoomStateStarted,
@@ -149,6 +149,7 @@ func (r RoomRepositoryImpl) Ready(ctx context.Context, state contract.RequestWeb
 			log.Errorln("failed to marshal json: ", err)
 		}
 		r.Redis.Publish(room.RoomId, res)
+		return schema.Room{}, nil
 	}
 
 	return room, nil
@@ -203,6 +204,7 @@ func (r RoomRepositoryImpl) Sync(ctx context.Context, state contract.RequestWebs
 			log.Errorln("failed to marshal json: ", err)
 		}
 		r.Redis.Publish(room.RoomId, res)
+		return schema.Room{}, nil
 	}
 
 	return room, nil
