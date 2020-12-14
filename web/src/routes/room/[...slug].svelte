@@ -7,55 +7,36 @@
 </script>
 
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import Cookies from 'js-cookie';
 
-  import { querySerializer } from '@/util/query.js';
-
-  import { username } from '@/store/index.js';
+  import { username, code, participantId, action, currentWordCount } from '@/store/index.js';
+  import { initWS, closeWS } from '@/util/websocket.js';
 
   import api from '@/api/index.js';
   import Metadata from '@/components/Metadata.svelte';
+  import Play from '@/assets/img/play.svg';
 
   export let roomId;
-  let roomData, sourceText, destinedText, participantId;
+  let roomData, sourceText, destinedText;
   let currentIndex = 0;
   let currentText = '';
   let hasError = false;
 
   onMount(() => {
+    console.log(roomId);
+    code.set(roomId);
+    action.set('join');
+    currentWordCount.set(0);
+    participantId.set(Cookies.get('participantId'));
+    if (!$participantId) {
+      Cookies.set('participantId', `participant_${new Date().getTime()}`);
+      participantId.set(Cookies.get('participantId'));
+    }
+
     getRoomByCode();
-
-    const params = {
-      code: roomId,
-      participant_id: participantId,
-      participant_name: $username
-    };
-
-    const ws = new WebSocket(`${ENV.WEB_SOCKET_BASE_URL}/api/join-room${querySerializer(params)}`);
-
-    ws.onopen = function (event) {
-      console.log('masuk');
-      ws.send(
-        JSON.stringify(
-          Object.assign(params, {
-            action: 'join',
-            current_word_count: 10
-          })
-        )
-      );
-    };
-
-    ws.onmessage = function (event) {
-      console.log(event);
-    };
+    initWS();
   });
-
-  participantId = Cookies.get('participantId');
-  if (!participantId) {
-    Cookies.set('participantId', `participant_${new Date().getTime()}`);
-    participantId = Cookies.get('participantId');
-  }
 
   function getRoomByCode() {
     const params = {
@@ -86,6 +67,14 @@
       }
     }
   }
+
+  function handleChangeAction(value) {
+    action.set(value);
+  }
+
+  onDestroy(() => {
+    closeWS();
+  });
 </script>
 
 <style>
@@ -130,7 +119,7 @@
 
 <div class="room">
   <div class="room-wrapper">
-    <div>Hallo, {$username} - {participantId}</div>
+    <div>Hallo, {$username} - {$participantId}</div>
     {#if roomData}
       <div>{roomData.source_lang} - {roomData.destined_lang}</div>
       <div class="text-wrapper flex flex-wrap justify-start">
@@ -152,6 +141,8 @@
           bind:value={currentText}
           on:input={handleInputChange} />
       </div>
+
+      <div class="button-primary w-24" on:click={() => handleChangeAction('ready')}>Ready</div>
     {/if}
   </div>
 </div>
