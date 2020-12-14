@@ -134,6 +134,10 @@ func (r RoomRepositoryImpl) Ready(ctx context.Context, state contract.RequestWeb
 		}
 	}
 
+	if len(room.Result) <= 1 {
+	    isAllReady = false
+    }
+
 	if isAllReady {
 		room.State = schema.RoomStateStarted
 		if err := set(r.Redis, room.RoomId, room); err != nil {
