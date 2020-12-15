@@ -30,8 +30,9 @@ type RoomRepositoryImpl struct {
 
 func (r RoomRepositoryImpl) Create(ctx context.Context, in contract.RequestCreateRoomContract) (contract.ResponseCreateRoomContract, error) {
 	randomContentTranslation, err := r.ContentRepository.GetRandom(ctx, contract.RequestGetContentContract{
-		SourceLang:   in.SourceLang,
-		DestinedLang: in.DestinedLang,
+		SourceLang:        in.SourceLang,
+		DestinedLang:      in.DestinedLang,
+		ContentDifficulty: in.ContentDifficulty,
 	})
 
 	if err != nil {
