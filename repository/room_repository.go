@@ -135,8 +135,8 @@ func (r RoomRepositoryImpl) Ready(ctx context.Context, state contract.RequestWeb
 	}
 
 	if len(room.Result) <= 1 {
-	    isAllReady = false
-    }
+		isAllReady = false
+	}
 
 	if isAllReady {
 		room.State = schema.RoomStateStarted
@@ -199,6 +199,11 @@ func (r RoomRepositoryImpl) Sync(ctx context.Context, state contract.RequestWebs
 	}
 
 	if isAllFinish {
+		room.State = schema.RoomStateFinish
+		if err := set(r.Redis, room.RoomId, room); err != nil {
+			log.Errorln(err)
+			return schema.Room{}, err
+		}
 		res, err := json.Marshal(&contract.ResponseWebsocketContract{
 			MyState:     currentState.State,
 			RoomState:   schema.RoomStateFinish,
