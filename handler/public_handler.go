@@ -107,8 +107,8 @@ func (p PublicHandler) JoinRoom(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
-	events := make(chan string, 5)
+	wsWriterStream := make(chan string, 5)
 
-	go p.RoomSocketSvc.Listener(r.Context(), joinRoomContract, conn, events)
-	p.RoomSocketSvc.Writer(r.Context(), conn, events)
+	go p.RoomSocketSvc.Listener(r.Context(), joinRoomContract, conn, wsWriterStream)
+	p.RoomSocketSvc.Writer(r.Context(), conn, wsWriterStream)
 }

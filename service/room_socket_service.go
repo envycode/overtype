@@ -24,12 +24,15 @@ type RoomSocketServiceImpl struct {
 	Repo  repository.RoomRepository
 }
 
-func (r RoomSocketServiceImpl) Listener(ctx context.Context, req contract.RequestJoinRoomContract, conn *websocket.Conn, writer chan string) {
+func (r RoomSocketServiceImpl) Listener(ctx context.Context, req contract.RequestJoinRoomContract, conn *websocket.Conn, wsWriterStream chan string) {
 	sub := r.Redis.Subscribe(req.Code)
 	ch := sub.Channel()
 	for {
 		select {
-		case message := <-writer:
+		case message, ok := <-wsWriterStream:
+			if !ok {
+				break
+			}
 			if err := conn.SetWriteDeadline(time.Now().Add(10 * time.Second)); err != nil {
 				log.Errorln("Fail receive message err:", err)
 				continue
@@ -39,13 +42,13 @@ func (r RoomSocketServiceImpl) Listener(ctx context.Context, req contract.Reques
 				continue
 			}
 		case broadcast := <-ch:
-			writer <- broadcast.Payload
+			wsWriterStream <- broadcast.Payload
 		}
 
 	}
 }
 
-func (r RoomSocketServiceImpl) Writer(ctx context.Context, conn *websocket.Conn, writer chan string) {
+func (r RoomSocketServiceImpl) Writer(ctx context.Context, conn *websocket.Conn, wsWriterStream chan string) {
 	for {
 		_, byteMsg, err := conn.ReadMessage()
 
@@ -53,6 +56,7 @@ func (r RoomSocketServiceImpl) Writer(ctx context.Context, conn *websocket.Conn,
 			if !websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure) {
 				log.Errorln("SocketClose err:", err)
 			}
+			close(wsWriterStream)
 			break
 		}
 
@@ -62,11 +66,11 @@ func (r RoomSocketServiceImpl) Writer(ctx context.Context, conn *websocket.Conn,
 			r.sendAndMarshal(render.StatusError{
 				HttpCode: http.StatusBadRequest,
 				Err:      err,
-			}, writer)
+			}, wsWriterStream)
 			continue
 		}
 
-		r.Handle(ctx, wsRequest, writer)
+		r.Handle(ctx, wsRequest, wsWriterStream)
 	}
 }
 
@@ -138,12 +142,12 @@ func (r RoomSocketServiceImpl) Handle(ctx context.Context, req contract.RequestW
 	}
 }
 
-func (r RoomSocketServiceImpl) sendAndMarshal(any interface{}, writer chan string) {
+func (r RoomSocketServiceImpl) sendAndMarshal(any interface{}, wsWriterStream chan string) {
 	res, err := json.Marshal(&any)
 	if err != nil {
 		log.Errorln(err)
-		writer <- "failed to marshal json object from server"
+		wsWriterStream <- "failed to marshal json object from server"
 		return
 	}
-	writer <- string(res)
+	wsWriterStream <- string(res)
 }
