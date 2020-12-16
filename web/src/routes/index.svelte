@@ -5,6 +5,7 @@
   import api from '@/api/index.js';
   import Metadata from '@/components/Metadata.svelte';
   import Play from '@/assets/img/play.svg';
+  import Button from '@/components/Button.svelte';
 
   let code = '';
   let visibleInput = false;
@@ -48,11 +49,6 @@
     @apply text-center;
     text-shadow: -4px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
   }
-
-  .menu {
-    @apply w-48;
-    @apply mt-8;
-  }
 </style>
 
 <Metadata />
@@ -65,11 +61,11 @@
         <div class="pb-4 md:pb-0 flex flex-col">
           <label for="name" class="input-label text-base mb-2">Your Username</label>
           <div>
-            <div class="input-field inline-flex items-baseline border-none shadow-md bg-white" for="username">
+            <div class="input-field shadow-md bg-white" for="username">
               <input
                 id="username"
                 type="text"
-                class="placeholder-blue w-48 p-2 no-outline text-dusty-blue-darker"
+                class="placeholder-blue w-full p-2 no-outline text-dusty-blue-darker"
                 name="username"
                 placeholder="Your name"
                 bind:value={$username} />
@@ -77,19 +73,18 @@
           </div>
         </div>
       </div>
-      <div class="button-primary menu flex flex-wrap justify-space-between" on:click={createRoom}>
-        <div class="w-8">
-          <Play />
-        </div>
-        <div class="self-center ml-2">Create Room</div>
-      </div>
 
-      <div class="button-primary menu flex flex-wrap justify-space-between" on:click={toggleInput}>
-        <div class="w-8">
+      <Button on:clicked={() => createRoom()} text="Create Room" class="mt-4">
+        <div class="w-8" slot="icon">
           <Play />
         </div>
-        <div class="self-center ml-2">Join Room</div>
-      </div>
+      </Button>
+
+      <Button on:clicked={() => toggleInput()} text="Join Room" class="mt-4">
+        <div class="w-8" slot="icon">
+          <Play />
+        </div>
+      </Button>
     {:else}
       <div in:fade out:fade>
         <div class="pb-4 md:pb-0 flex flex-col">

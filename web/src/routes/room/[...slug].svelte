@@ -10,11 +10,13 @@
   import { onMount, onDestroy } from 'svelte';
   import Cookies from 'js-cookie';
 
-  import { username, code, participantId, action, currentWordCount } from '@/store/index.js';
+  import { username, code, participantId, action, currentWordCount, wsStore } from '@/store/index.js';
   import { initWS, closeWS } from '@/util/websocket.js';
 
   import api from '@/api/index.js';
   import Metadata from '@/components/Metadata.svelte';
+  import Button from '@/components/Button.svelte';
+  import DataVisualization from '@/components/DataVisualization.svelte';
   import Play from '@/assets/img/play.svg';
 
   export let roomId;
@@ -83,6 +85,7 @@
     @apply my-auto;
     @apply h-screen;
     @apply bg-blue-300;
+    @apply p-4;
   }
   .room-wrapper {
     @apply mx-auto;
@@ -102,6 +105,8 @@
 
   .input-field {
     @apply font-bold;
+    @apply bg-white;
+    @apply w-full;
   }
 
   .success {
@@ -120,7 +125,9 @@
 <div class="room">
   <div class="room-wrapper">
     <div>Hallo, {$username} - {$participantId}</div>
+
     {#if roomData}
+      <DataVisualization data={$wsStore} />
       <div>{roomData.source_lang} - {roomData.destined_lang}</div>
       <div class="text-wrapper flex flex-wrap justify-start">
         {#each sourceText as s, i}
@@ -131,18 +138,28 @@
         {/each}
       </div>
 
-      <div class="input-field inline-flex items-baseline border-none shadow-md bg-white w-full" for="username">
-        <input
-          id="inputText"
-          type="text"
-          class="placeholder-blue w-full p-2 no-outline text-dusty-blue-darker"
-          name="inputText"
-          placeholder="Type here"
-          bind:value={currentText}
-          on:input={handleInputChange} />
-      </div>
-
-      <div class="button-primary w-24" on:click={() => handleChangeAction('ready')}>Ready</div>
+      {#if $wsStore && $wsStore.my_state === 0}
+        <div class="flex justify-center">
+          <Button on:clicked={() => handleChangeAction('ready')} text="Ready" class="mt-4">
+            <div class="w-8" slot="icon">
+              <Play />
+            </div>
+          </Button>
+        </div>
+      {:else if $wsStore && $wsStore.my_state === 1}
+        <div class="flex justify-center mt-4">Waiting . . .</div>
+      {:else if $wsStore && $wsStore.room_state === 1}
+        <div class="input-field border-none shadow-md" for="username">
+          <input
+            id="inputText"
+            type="text"
+            class="placeholder-blue w-full p-2 no-outline text-dusty-blue-darker"
+            name="inputText"
+            placeholder="Type here"
+            bind:value={currentText}
+            on:input={handleInputChange} />
+        </div>
+      {/if}
     {/if}
   </div>
 </div>

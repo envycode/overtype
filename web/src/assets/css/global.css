@@ -17,4 +17,5 @@
   @apply border-b-2;
   @apply border-t-2;
   @apply border-yellow-500;
+  cursor: pointer;
 }

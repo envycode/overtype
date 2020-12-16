@@ -11,6 +11,6 @@ type RequestWebsocketContract struct {
 
 type ResponseWebsocketContract struct {
 	MyState     schema.ParticipantState           `json:"my_state"`
-	RoomState   schema.RoomState                  `json:"room-state"`
+	RoomState   schema.RoomState                  `json:"room_state"`
 	LeaderBoard map[string]schema.RoomParticipant `json:"leader_board"`
 }
