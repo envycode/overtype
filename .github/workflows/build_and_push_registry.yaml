@@ -7,6 +7,14 @@ on:
         description: "Branch or Commit ID to build"
         default: "master"
         required: true
+      backend_url:
+        description: "Backend URL"
+        default: "https://overtype.weeb.work"
+        required: true
+      ws_url:
+        description: "WS URL"
+        default: "wss://overtype.weeb.work"
+        required: true
 
 jobs:
   build_and_push_registry:
@@ -15,6 +23,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - run: git checkout ${{ github.event.inputs.checkout }}
+      - run: cp web/.env.example web/.env
+      - run: sed -i "s/{{WEB_SOCKET_BASE_URL}}/${{ github.event.inputs.ws_url }}/g" web/.env
+      - run: sed -i "s/{{BASE_URL}}/${{ github.event.inputs.backend_url }}/g" web/.env
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
