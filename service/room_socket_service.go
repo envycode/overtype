@@ -31,7 +31,7 @@ func (r RoomSocketServiceImpl) Listener(ctx context.Context, req contract.Reques
 		select {
 		case message, ok := <-wsWriterStream:
 			if !ok {
-				break
+				return
 			}
 			if err := conn.SetWriteDeadline(time.Now().Add(10 * time.Second)); err != nil {
 				log.Errorln("Fail receive message err:", err)
@@ -56,8 +56,7 @@ func (r RoomSocketServiceImpl) Writer(ctx context.Context, conn *websocket.Conn,
 			if !websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure) {
 				log.Errorln("SocketClose err:", err)
 			}
-			close(wsWriterStream)
-			break
+			return
 		}
 
 		var wsRequest contract.RequestWebsocketContract
