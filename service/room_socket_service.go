@@ -121,7 +121,7 @@ func (r RoomSocketServiceImpl) Handle(ctx context.Context, req contract.RequestW
 		return
 	}
 	if req.Action == schema.ActionSync {
-		res, err := r.Repo.Ready(ctx, req, room)
+		res, err := r.Repo.Sync(ctx, req, room)
 		if err != nil {
 			r.sendAndMarshal(render.StatusError{
 				HttpCode: http.StatusBadRequest,
