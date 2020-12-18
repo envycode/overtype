@@ -22,6 +22,7 @@
   export let roomId;
   let roomData, sourceText, destinedText;
   let currentIndex = 0;
+  let currentLength = 0;
   let currentText = '';
   let hasError = false;
 
@@ -59,11 +60,13 @@
 
   function handleInputChange(event) {
     if (event.data === ' ') {
-      console.log('change', event, destinedText[currentIndex], event.target.value);
       if (destinedText[currentIndex] === event.target.value.replace(/\s/g, '')) {
         hasError = false;
         currentIndex += 1;
         currentText = '';
+        currentLength += destinedText[currentIndex].length;
+        currentWordCount.set(currentLength);
+        console.log('change', currentLength, destinedText[currentIndex].length, $currentWordCount);
       } else {
         hasError = true;
       }
@@ -146,7 +149,7 @@
             </div>
           </Button>
         </div>
-      {:else if $wsStore && $wsStore.my_state === 1}
+      {:else if $wsStore && $wsStore.my_state === 1 && $wsStore.room_state === 0}
         <div class="flex justify-center mt-4">Waiting . . .</div>
       {:else if $wsStore && $wsStore.room_state === 1}
         <div class="input-field border-none shadow-md" for="username">

@@ -31,6 +31,10 @@
   function createRoomFail() {
     console.log('create room failed');
   }
+
+  function handleJoin() {
+    goto(`/room/${code}`);
+  }
 </script>
 
 <style>
@@ -102,7 +106,7 @@
           </div>
         </div>
 
-        <div class="button-primary menu">
+        <div class="button-primary menu" on:click={() => handleJoin()}>
           <Play />
         </div>
       </div>
