@@ -14,29 +14,6 @@ module.exports = {
         xl: '5rem'
       }
     },
-    typography: {
-      default: {
-        css: {
-          maxWidth: '100%'
-        }
-      },
-      lg: {
-        css: {
-          h1: {
-            marginTop: 0
-          },
-          h2: {
-            marginTop: 0
-          },
-          h3: {
-            marginTop: 0
-          },
-          h4: {
-            marginTop: 0
-          }
-        }
-      }
-    },
     extend: {
       fontFamily: {
         body:
@@ -55,6 +32,5 @@ module.exports = {
       }
     }
   },
-  variants: {},
-  plugins: [require('@tailwindcss/typography')]
+  variants: {}
 };

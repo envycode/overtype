@@ -8,6 +8,11 @@
 </script>
 
 <style>
+  .visualization {
+    @apply bg-blue-400;
+    @apply p-4;
+    @apply rounded-md;
+  }
   .progress {
     @apply bg-gray-200;
     @apply rounded-full;
@@ -26,7 +31,6 @@
   }
 
   .progress-image {
-    @apply mt-4;
     @apply flex;
     min-width: 64px;
   }
@@ -36,9 +40,10 @@
   }
 </style>
 
-<div class="visualization">
+<div class="visualization mb-4">
   {#if data && data.leader_board}
     {#each Object.keys(data.leader_board) as d, i}
+      <div class="text-left">{data.leader_board[d].participant_name}</div>
       <div
         class={`
           progress-image
@@ -46,7 +51,7 @@
           justify-${onProgressChange(data.leader_board[d].word_type) === 0 ? 'start' : 'end'}`}>
         <img src="/images/car1.png" alt="mobil" />
       </div>
-      <div class="progress">
+      <div class="progress mb-4">
         {#if onProgressChange(data.leader_board[d].word_type) > 0}
           <div class={`progress-value w-${onProgressChange(data.leader_board[d].word_type)}/12`}>&nbsp;</div>
         {:else}

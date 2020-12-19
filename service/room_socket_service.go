@@ -3,15 +3,16 @@ package service
 import (
 	"context"
 	"encoding/json"
-	"github.com/go-redis/redis"
-	"github.com/gorilla/websocket"
-	log "github.com/sirupsen/logrus"
 	"net/http"
 	"overtype/contract"
 	"overtype/render"
 	"overtype/repository"
 	"overtype/schema"
 	"time"
+
+	"github.com/go-redis/redis"
+	"github.com/gorilla/websocket"
+	log "github.com/sirupsen/logrus"
 )
 
 type RoomSocketService interface {
@@ -84,8 +85,9 @@ func (r RoomSocketServiceImpl) Handle(ctx context.Context, req contract.RequestW
 	}
 	if req.Action == schema.ActionJoin {
 		res, err := r.Repo.Join(ctx, contract.RequestJoinRoomContract{
-			Code:          req.Code,
-			ParticipantId: req.ParticipantId,
+			Code:            req.Code,
+			ParticipantId:   req.ParticipantId,
+			ParticipantName: req.ParticipantName,
 		}, room)
 		if err != nil {
 			r.sendAndMarshal(render.StatusError{

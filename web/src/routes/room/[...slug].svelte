@@ -10,7 +10,7 @@
   import { onMount, onDestroy } from 'svelte';
   import Cookies from 'js-cookie';
 
-  import { username, code, participantId, action, wordCount, currentWordCount, wsStore } from '@/store/index.js';
+  import { code, participantId, action, wordCount, currentWordCount, wsStore } from '@/store/index.js';
   import { initWS, closeWS } from '@/util/websocket.js';
 
   import api from '@/api/index.js';
@@ -92,7 +92,7 @@
     @apply mx-auto;
     @apply my-auto;
     @apply text-center;
-    max-width: 600px;
+    max-width: 900px;
   }
   .text-wrapper {
     @apply bg-blue-200;
@@ -110,6 +110,24 @@
     @apply w-full;
   }
 
+  .room-info {
+    @apply bg-blue-400;
+    @apply rounded-md;
+    @apply px-4;
+    @apply flex;
+    @apply justify-between;
+    @apply flex-wrap;
+  }
+
+  .room-info div {
+    @apply bg-blue-300;
+    @apply px-4;
+    @apply py-2;
+    @apply my-4;
+    @apply rounded-full;
+    @apply font-bold;
+  }
+
   .success {
     @apply text-green-500;
     @apply font-bold;
@@ -123,14 +141,14 @@
 
 <Metadata />
 
-<div class="room">
-  <div class="room-wrapper">
-    <div>Hallo, {$username} - {$participantId}</div>
-
+<div class="room md:flex md:justify-center md:align-center ">
+  <div class="room-wrapper md:w-3/4">
     {#if roomData}
+      <div class="room-info mb-4">
+        <div>{roomData.source_lang} - {roomData.destined_lang}</div>
+        <div>{$code}</div>
+      </div>
       <DataVisualization data={$wsStore} />
-
-      <div>{roomData.source_lang} - {roomData.destined_lang}</div>
 
       <div class="text-wrapper flex flex-wrap justify-start">
         {#each sourceText as s, i}

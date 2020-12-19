@@ -7,6 +7,7 @@ type RequestWebsocketContract struct {
 	ParticipantId    string `json:"participant_id"`
 	Action           string `json:"action"`
 	CurrentWordCount int    `json:"current_word_count"`
+	ParticipantName  string `json:"participant_name"`
 }
 
 type ResponseWebsocketContract struct {
