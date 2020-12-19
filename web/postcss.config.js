@@ -4,8 +4,8 @@ const cssnano = require('cssnano')({
 });
 
 const purgecss = require('@fullhuman/postcss-purgecss')({
-  safelist,
   content: ['./src/**/*.svelte', './src/**/*.html'],
+  safelist,
   whitelistPatterns: [/svelte-/, /pre/, /code/],
   defaultExtractor: content => content.match(/[A-Za-z0-9-_:/]+/g) || []
 });

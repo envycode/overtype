@@ -10,5 +10,7 @@ module.exports = [
   'w-9/12',
   'w-10/12',
   'w-11/12',
-  'w-12/12'
+  'w-12/12',
+  'justify-start',
+  'justify-end'
 ];
