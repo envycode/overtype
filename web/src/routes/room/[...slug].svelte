@@ -10,7 +10,7 @@
   import { onMount, onDestroy } from 'svelte';
   import Cookies from 'js-cookie';
 
-  import { username, code, participantId, action, currentWordCount, wsStore } from '@/store/index.js';
+  import { username, code, participantId, action, wordCount, currentWordCount, wsStore } from '@/store/index.js';
   import { initWS, closeWS } from '@/util/websocket.js';
 
   import api from '@/api/index.js';
@@ -22,12 +22,10 @@
   export let roomId;
   let roomData, sourceText, destinedText;
   let currentIndex = 0;
-  let currentLength = 0;
   let currentText = '';
   let hasError = false;
 
   onMount(() => {
-    console.log(roomId);
     code.set(roomId);
     action.set('join');
     currentWordCount.set(0);
@@ -52,6 +50,7 @@
     roomData = response.body;
     sourceText = roomData.source_text.split(' ');
     destinedText = roomData.destined_text.split(' ');
+    wordCount.set(sourceText.length);
   }
 
   function getRoomByCodeFail() {
@@ -61,12 +60,11 @@
   function handleInputChange(event) {
     if (event.data === ' ') {
       if (destinedText[currentIndex] === event.target.value.replace(/\s/g, '')) {
+        action.set('sync');
         hasError = false;
         currentIndex += 1;
         currentText = '';
-        currentLength += destinedText[currentIndex].length;
-        currentWordCount.set(currentLength);
-        console.log('change', currentLength, destinedText[currentIndex].length, $currentWordCount);
+        currentWordCount.set(currentIndex);
       } else {
         hasError = true;
       }
@@ -131,7 +129,9 @@
 
     {#if roomData}
       <DataVisualization data={$wsStore} />
+
       <div>{roomData.source_lang} - {roomData.destined_lang}</div>
+
       <div class="text-wrapper flex flex-wrap justify-start">
         {#each sourceText as s, i}
           <div class="text" class:success={i < currentIndex} class:error={hasError && i === currentIndex}>
@@ -151,7 +151,7 @@
         </div>
       {:else if $wsStore && $wsStore.my_state === 1 && $wsStore.room_state === 0}
         <div class="flex justify-center mt-4">Waiting . . .</div>
-      {:else if $wsStore && $wsStore.room_state === 1}
+      {:else if $wsStore && $wsStore.room_state === 1 && $wsStore.leader_board[$participantId].state !== 2}
         <div class="input-field border-none shadow-md" for="username">
           <input
             id="inputText"
@@ -162,6 +162,8 @@
             bind:value={currentText}
             on:input={handleInputChange} />
         </div>
+      {:else if $wsStore && $wsStore.leader_board[$participantId].state === 2}
+        <div class="flex justify-center mt-4">Finish :)</div>
       {/if}
     {/if}
   </div>

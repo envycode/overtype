@@ -1,4 +1,4 @@
-export const goUrl = (url) => {
+export const goUrl = url => {
   window.location.href = url;
 };
 
@@ -13,9 +13,9 @@ export const scrollToTop = () => {
   }, 15);
 };
 
-export const isEmpty = (value) => value === '' || value === null || typeof value === 'undefined';
+export const isEmpty = value => value === '' || value === null || typeof value === 'undefined';
 
-export const decodeHtml = (input) => {
+export const decodeHtml = input => {
   const doc = new DOMParser().parseFromString(input, 'text/html');
   return doc.documentElement.textContent;
 };
@@ -24,5 +24,5 @@ export default {
   goUrl,
   scrollToTop,
   isEmpty,
-  decodeHtml,
+  decodeHtml
 };

@@ -84,23 +84,15 @@ function changeJsExtensionToTs(dir) {
     if (elements[i].isDirectory()) {
       changeJsExtensionToTs(path.join(dir, elements[i].name));
     } else if (elements[i].name.match(/^[^_]((?!json).)*js$/)) {
-      fs.renameSync(
-        path.join(dir, elements[i].name),
-        path.join(dir, elements[i].name).replace('.js', '.ts')
-      );
+      fs.renameSync(path.join(dir, elements[i].name), path.join(dir, elements[i].name).replace('.js', '.ts'));
     }
   }
 }
 
 function updateSingleSvelteFile({ view, vars, contextModule }) {
   replaceInFile(path.join(projectRoot, 'src', `${view}.svelte`), [
-    [
-      /(?:<script)(( .*?)*?)>/gm,
-      (m, attrs) => `<script${attrs}${!attrs.includes('lang="ts"') ? ' lang="ts"' : ''}>`
-    ],
-    ...(vars
-      ? vars.map(({ name, type }) => [`export let ${name};`, `export let ${name}: ${type};`])
-      : []),
+    [/(?:<script)(( .*?)*?)>/gm, (m, attrs) => `<script${attrs}${!attrs.includes('lang="ts"') ? ' lang="ts"' : ''}>`],
+    ...(vars ? vars.map(({ name, type }) => [`export let ${name};`, `export let ${name}: ${type};`]) : []),
     ...(contextModule ? contextModule.map(({ js, ts }) => [js, ts]) : [])
   ]);
 }
@@ -160,10 +152,7 @@ import typescript from '@rollup/plugin-typescript';
       /(?<!THIS_IS_UNDEFINED[^\n]*\n\s*)onwarn\(warning\);/,
       `(warning.code === 'THIS_IS_UNDEFINED') ||\n\tonwarn(warning);`
     ],
-    [
-      /input: config.client.input\(\)(?!\.replace)/,
-      `input: config.client.input().replace(/\\.js$/, '.ts')`
-    ],
+    [/input: config.client.input\(\)(?!\.replace)/, `input: config.client.input().replace(/\\.js$/, '.ts')`],
     [
       /input: config.server.input\(\)(?!\.replace)/,
       `input: { server: config.server.input().server.replace(/\\.js$/, ".ts") }`
@@ -174,10 +163,7 @@ import typescript from '@rollup/plugin-typescript';
     ],
     // Add preprocess to the svelte config, this is tricky because there's no easy signifier.
     // Instead we look for 'hydratable: true,'
-    [
-      /hydratable: true(?!,\n\s*preprocess)/g,
-      'hydratable: true,\n\t\t\t\tpreprocess: sveltePreprocess()'
-    ],
+    [/hydratable: true(?!,\n\s*preprocess)/g, 'hydratable: true,\n\t\t\t\tpreprocess: sveltePreprocess()'],
     // Add TypeScript
     [/commonjs\(\)(?!,\n\s*typescript)/g, 'commonjs(),\n\t\t\ttypescript({ sourceMap: dev })']
   ]);
@@ -192,29 +178,17 @@ function updateWebpackConfig() {
       `require('webpack-modules');\nconst sveltePreprocess = require('svelte-preprocess');\n`
     ],
     // Edit extensions
-    [
-      /\['\.mjs', '\.js', '\.json', '\.svelte', '\.html'\]/,
-      `['.mjs', '.js', '.ts', '.json', '.svelte', '.html']`
-    ],
+    [/\['\.mjs', '\.js', '\.json', '\.svelte', '\.html'\]/, `['.mjs', '.js', '.ts', '.json', '.svelte', '.html']`],
     // Edit entries
-    [
-      /entry: config\.client\.entry\(\)/,
-      `entry: { main: config.client.entry().main.replace(/\\.js$/, '.ts') }`
-    ],
-    [
-      /entry: config\.server\.entry\(\)/,
-      `entry: { server: config.server.entry().server.replace(/\\.js$/, '.ts') }`
-    ],
+    [/entry: config\.client\.entry\(\)/, `entry: { main: config.client.entry().main.replace(/\\.js$/, '.ts') }`],
+    [/entry: config\.server\.entry\(\)/, `entry: { server: config.server.entry().server.replace(/\\.js$/, '.ts') }`],
     [
       /entry: config\.serviceworker\.entry\(\)/,
       `entry: { 'service-worker': config.serviceworker.entry()['service-worker'].replace(/\\.js$/, '.ts') }`
     ],
     // Add preprocess to the svelte config, this is tricky because there's no easy signifier.
     // Instead we look for 'hydratable: true,'
-    [
-      /hydratable: true(?!,\n\s*preprocess)/g,
-      'hydratable: true,\n\t\t\t\t\t\t\tpreprocess: sveltePreprocess()'
-    ],
+    [/hydratable: true(?!,\n\s*preprocess)/g, 'hydratable: true,\n\t\t\t\t\t\t\tpreprocess: sveltePreprocess()'],
     // Add TypeScript rules for client and server
     [
       /module: {\n\s*rules: \[\n\s*(?!{\n\s*test: \/\\\.ts\$\/)/g,
@@ -239,14 +213,8 @@ function updateServiceWorker() {
     [`self.skipWaiting();`, `((self as any) as ServiceWorkerGlobalScope).skipWaiting();`],
     [`self.clients.claim();`, `((self as any) as ServiceWorkerGlobalScope).clients.claim();`],
     [`fetchAndCache(request)`, `fetchAndCache(request: Request)`],
-    [
-      `self.addEventListener('activate', event =>`,
-      `self.addEventListener('activate', (event: ExtendableEvent) =>`
-    ],
-    [
-      `self.addEventListener('install', event =>`,
-      `self.addEventListener('install', (event: ExtendableEvent) =>`
-    ],
+    [`self.addEventListener('activate', event =>`, `self.addEventListener('activate', (event: ExtendableEvent) =>`],
+    [`self.addEventListener('install', event =>`, `self.addEventListener('install', (event: ExtendableEvent) =>`],
     [`addEventListener('fetch', event =>`, `addEventListener('fetch', (event: FetchEvent) =>`]
   ]);
 }
@@ -272,10 +240,7 @@ function configureVsCode() {
     fs.mkdirSync(dir);
   }
 
-  createFile(
-    path.join(projectRoot, '.vscode', 'extensions.json'),
-    `{"recommendations": ["svelte.svelte-vscode"]}`
-  );
+  createFile(path.join(projectRoot, '.vscode', 'extensions.json'), `{"recommendations": ["svelte.svelte-vscode"]}`);
 }
 
 function deleteThisScript() {

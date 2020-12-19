@@ -1,13 +1,5 @@
 import { get } from 'svelte/store';
-import {
-  username,
-  code,
-  participantId,
-  action,
-  currentWordCount,
-  wsStore,
-  WS_ACTIVE
-} from '@/store/index.js';
+import { username, code, participantId, action, currentWordCount, wsStore, WS_ACTIVE } from '@/store/index.js';
 import { querySerializer } from '@/util/query.js';
 
 export let wsURL;
@@ -15,7 +7,6 @@ export let wsURL;
 let wsConnection;
 let wsTries = 5;
 let timeout = 1000;
-
 
 wsURL = ENV.WEB_SOCKET_BASE_URL;
 
@@ -66,8 +57,7 @@ export function initWS() {
         closeWS();
       }
       wsStore.set(data);
-    }
-    catch (e) {
+    } catch (e) {
       //console.error('got non json data', event.data, e);
     }
   };
@@ -102,8 +92,8 @@ function heartbeat() {
     participant_name: get(username),
     action: get(action),
     current_word_count: get(currentWordCount)
-  }
+  };
 
   wsConnection.send(JSON.stringify(params));
-  setTimeout(heartbeat, 1000);
+  setTimeout(heartbeat, 3000);
 }

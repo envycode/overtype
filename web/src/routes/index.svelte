@@ -23,7 +23,6 @@
   }
 
   function createRoomSuccess(response) {
-    console.log(response);
     const { room_id } = response.body;
     goto(`/room/${room_id}`);
   }
