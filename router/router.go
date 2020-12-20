@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 	"overtype/appcontext"
@@ -80,6 +81,14 @@ func SetupRoute(appCtx *appcontext.Application) *mux.Router {
 		HandleFunc("/join-room", publicHandler.JoinRoom).
 		Methods(http.MethodGet)
 
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./web_build")))
+	fs := http.FileServer(http.Dir("./web_build"))
+
+	r.PathPrefix("/room/{code}").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		name := mux.Vars(r)["code"]
+		prefix := fmt.Sprintf("/room/%s", name)
+		http.StripPrefix(prefix, fs).ServeHTTP(w, r)
+	})
+
+	r.PathPrefix("/").Handler(fs)
 	return r
 }
