@@ -21,7 +21,7 @@
 
   .cloud1 {
     width: 200px;
-    animation: move 20s infinite alternate;
+    animation: move 40s infinite alternate;
     margin-top: 5%;
   }
 
@@ -33,8 +33,8 @@
 
   .cloud3 {
     width: 200px;
-    animation: move 15s infinite alternate;
-    margin-top: 35%;
+    animation: move 65s infinite alternate;
+    margin-top: 40%;
   }
 
   @media screen and (max-width: 768px) {

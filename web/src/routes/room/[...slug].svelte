@@ -82,10 +82,7 @@
 
 <style>
   .room {
-    @apply mx-auto;
-    @apply my-auto;
     @apply h-screen;
-    @apply bg-blue-300;
     @apply p-4;
   }
   .room-wrapper {

@@ -38,10 +38,7 @@
 
 <style>
   .home {
-    @apply mx-auto;
-    @apply my-auto;
     @apply h-screen;
-    @apply bg-blue-300;
   }
   .home-wrapper {
     @apply mx-auto;
