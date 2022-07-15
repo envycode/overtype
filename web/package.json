@@ -14,7 +14,7 @@
     "format": "prettier --write \"./**/*.{js,yaml,svelte}\""
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "compression": "^1.7.1",
     "js-cookie": "^2.2.1",
     "polka": "next",
