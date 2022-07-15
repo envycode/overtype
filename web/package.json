@@ -19,7 +19,7 @@
     "js-cookie": "^2.2.1",
     "polka": "next",
     "sirv": "^1.0.0",
-    "ws": "^7.4.1"
+    "ws": "^7.4.6"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
